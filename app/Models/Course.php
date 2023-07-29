@@ -12,8 +12,15 @@ class Course extends Model
 
     protected $fillable = [
         'name',
+        'course_category_id',
         'description',
     ];
+
+    // Mutator to set the default value for description
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = $value ?: '';
+    }
 
     public function courseCategory()
     {

@@ -12,14 +12,18 @@ class Topic extends Model
 
     protected $fillable = [
         'name',
-        'type',
-        'type_name',
-        'working_place',
+        'description',
     ];
 
-    public function users()
+    // Mutator to set the default value for description
+    public function setDescriptionAttribute($value)
     {
-        return $this->hasMany(User::class);
+        $this->attributes['description'] = $value ?: '';
+    }
+
+    public function course()
+    {
+        return $this->hasMany(Course::class);
     }
 
     public function topics()
