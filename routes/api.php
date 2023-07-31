@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CourseCategoryController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -14,6 +16,19 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
+    Route::group(['prefix' => 'staff'], function () {
+        Route::group(['prefix' => 'courses'], function () {
+            Route::get('/', [CourseController::class, 'index']);
+            Route::get('/add', [CourseController::class, 'create']);
+            Route::post('/add', [CourseController::class, 'store']);
+            Route::get('/edit/{id}', [CourseController::class, 'edit']);
+            Route::post('/edit/{id}', [CourseController::class, 'update']);
+            Route::delete('/delete/{id}', [CourseController::class, 'delete']);
+        });
+    });
+});
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::delete('/logout', [AuthController::class, 'logout']);

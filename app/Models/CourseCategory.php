@@ -15,6 +15,11 @@ class CourseCategory extends Model
         'description',
     ];
 
+    // Mutator to set the default value for description
+    public function setDescriptionAttribute($value)
+    {
+        $this->attributes['description'] = $value ?: '';
+    }
     public function courses()
     {
         return $this->hasMany(Course::class);
