@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\TraineeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -26,6 +27,17 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::get('/edit/{id}', [CourseController::class, 'edit']);
             Route::post('/edit/{id}', [CourseController::class, 'update']);
             Route::delete('/delete/{id}', [CourseController::class, 'delete']);
+            Route::get('/edit-trainees/{id}', [CourseController::class, 'editTrainee']);
+            Route::post('/edit-trainees/{id}', [CourseController::class, 'updateTrainee']);
+        });
+        Route::group(['prefix' => 'trainees'], function () {
+            Route::get('/', [TraineeController::class, 'index']);
+            Route::get('/take-ten', [TraineeController::class, 'takeTen']);
+            Route::get('/add', [TraineeController::class, 'create']);
+            Route::post('/add', [TraineeController::class, 'store']);
+            Route::get('/edit/{id}', [TraineeController::class, 'edit']);
+            Route::post('/edit/{id}', [TraineeController::class, 'update']);
+            Route::delete('/delete/{id}', [TraineeController::class, 'delete']);
         });
     });
 });
