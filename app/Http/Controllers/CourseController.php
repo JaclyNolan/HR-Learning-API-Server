@@ -71,7 +71,7 @@ class CourseController extends Controller
 
         $courseCategory = $query->take(10)->get();
 
-        return response()->json(['course_categories' => $courseCategory, 'bruh' => $search], 200);
+        return response()->json(['course_categories' => $courseCategory], 200);
     }
 
     /**
@@ -127,6 +127,15 @@ class CourseController extends Controller
         }
     }
 
+    public function editTrainee(Request $request, string $id)
+    {
+        $course = Course::with([
+            'trainees'
+        ])->find($id);
+
+        return response()->json($course, 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -134,17 +143,37 @@ class CourseController extends Controller
     {
         try {
             $course = Course::find($id);
-            if (!$course) throw new BadRequestException;
             $course->name = $request->input('name');
             $course->course_category_id = $request->input('course_category_id');
             $course->description = $request->input('description');
             $course->save();
             return response()->json('Successfully edit course with id: ' . $id, 200);
-        } catch (BadRequestException) {
-            return response()->json('Invalid id', 400);
         } catch (Exception) {
             return response()->json('Server Error', 500);
         }
+    }
+
+    public function updateTrainee(Request $request, string $id)
+    {
+        $newTraineeIds = $request->input('trainee_ids');
+
+        $course = Course::with([
+            'trainees'
+        ])->find($id);
+        $oldTrainees = $course->trainees;
+
+        //To-do: overwrite the new trainee with the old one
+        foreach ($oldTrainees as $oldTrainee) {
+            $course->trainees()->detach($oldTrainee->id);
+        }
+
+        foreach ($newTraineeIds as $newTraineeId) {
+            $course->trainees()->attach($newTraineeId);
+        }
+
+        $course = $course->fresh(['trainees']);
+
+        return response()->json($course, 200);
     }
 
     /**
