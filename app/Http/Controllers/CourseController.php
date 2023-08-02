@@ -7,6 +7,7 @@ use App\Models\CourseCategory;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class CourseController extends Controller
@@ -60,9 +61,17 @@ class CourseController extends Controller
      */
     public function create(Request $request)
     {
-        $courseCategory = CourseCategory::all();
+        $search = $request->input('search');
+        $query = CourseCategory::query();
 
-        return response()->json(['course_categories' => $courseCategory], 200);
+        if ($search) {
+            Log::info($search);
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        $courseCategory = $query->take(10)->get();
+
+        return response()->json(['course_categories' => $courseCategory, 'bruh' => $search], 200);
     }
 
     /**
@@ -106,7 +115,9 @@ class CourseController extends Controller
     public function edit(Request $request, string $id)
     {
         try {
-            $course = Course::find($id);
+            $course = Course::with([
+                'courseCategory:id,name'
+            ])->find($id);
             if (!$course) throw new BadRequestException;
             return response()->json($course, 200);
         } catch (BadRequestException) {
