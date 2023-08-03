@@ -14,9 +14,11 @@ return new class extends Migration
         Schema::create('trainers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('type');
-            $table->string('type_name');
+            $table->enum('type', ['External', 'Internal']);
+            $table->string('education');
             $table->string('working_place');
+            $table->string('phone_number');
+            $table->string('email');
             $table->timestamps();
             $table->softDeletes($column = 'deleted_at', $precision = 0);
         });
