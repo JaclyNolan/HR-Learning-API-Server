@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TraineeController;
 use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
@@ -43,12 +44,19 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
 
         Route::group(['prefix' => 'courseCategories'], function () {
             Route::get('/', [CourseCategoryController::class, 'index']);
-            Route::get('/take-ten', [CourseCategoryController::class, 'takeTen']);
-            Route::get('/add', [CourseCategoryController::class, 'create']);
             Route::post('/add', [CourseCategoryController::class, 'store']);
             Route::get('/edit/{id}', [CourseCategoryController::class, 'edit']);
             Route::post('/edit/{id}', [CourseCategoryController::class, 'update']);
             Route::delete('/delete/{id}', [CourseCategoryController::class, 'delete']);
+        });
+
+        Route::group(['prefix' => 'topics'], function () {
+            Route::get('/', [TopicController::class, 'index']);
+            Route::get('/add', [TopicController::class, 'create']);
+            Route::post('/add', [TopicController::class, 'store']);
+            Route::get('/edit/{id}', [TopicController::class, 'edit']);
+            Route::post('/edit/{id}', [TopicController::class, 'update']);
+            Route::delete('/delete/{id}', [TopicController::class, 'delete']);
         });
     });
 });

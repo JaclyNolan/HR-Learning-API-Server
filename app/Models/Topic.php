@@ -24,7 +24,9 @@ class Topic extends Model
 
     public function course()
     {
-        return $this->hasMany(Course::class);
+        //return $this->hasMany(Course::class);
+        return $this->belongsTo(Course::class, 'course_id');
+        
     }
 
     public function trainers()
