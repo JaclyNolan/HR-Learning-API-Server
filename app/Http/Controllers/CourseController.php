@@ -87,13 +87,13 @@ class CourseController extends Controller
             if ($course_name == '' || !CourseCategory::find($course_category_id))
                 throw new BadRequestException;
 
-            Course::create([
+            $course = Course::create([
                 "name" => $course_name,
                 "course_category_id" => $course_category_id,
                 "description" => $description,
             ]);
 
-            return response()->json('Successfully added ' . $course_name . ' course', 200);
+            return response()->json($course, 200);
         } catch (BadRequestException) {
             return response()->json('Invalid name or id', 400);
         } catch (Exception) {
@@ -147,7 +147,7 @@ class CourseController extends Controller
             $course->course_category_id = $request->input('course_category_id');
             $course->description = $request->input('description');
             $course->save();
-            return response()->json('Successfully edit course with id: ' . $id, 200);
+            return response()->json($course, 200);
         } catch (Exception) {
             return response()->json('Server Error', 500);
         }
