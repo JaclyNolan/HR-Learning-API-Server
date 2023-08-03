@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CourseCategoryController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TraineeController;
+use App\Http\Controllers\TrainerController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -38,6 +39,18 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::get('/edit/{id}', [TraineeController::class, 'edit']);
             Route::post('/edit/{id}', [TraineeController::class, 'update']);
             Route::delete('/delete/{id}', [TraineeController::class, 'delete']);
+        });
+    });
+});
+
+Route::middleware(['auth:sanctum', 'can:isTrainer'])->group(function () {
+    Route::group(['prefix' => 'trainer'], function () {
+        Route::group(['prefix' => 'courses'], function () {
+            Route::get('/', [CourseController::class, 'indexForTrainer']);
+        });
+        Route::group(['prefix' => 'profile'], function () {
+            Route::get('/', [TrainerController::class, 'profileForTrainer']);
+            Route::post('/', [TrainerController::class, 'updateProfileForTrainer']);
         });
     });
 });

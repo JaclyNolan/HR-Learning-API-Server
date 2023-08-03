@@ -18,9 +18,11 @@ class TrainerFactory extends Factory
     {
         return [
             'name' => $this->faker->name,
-            'type' => $this->faker->randomElement(['Type A', 'Type B', 'Type C']),
-            'type_name' => $this->faker->word,
-            'working_place' => $this->faker->city,
+            'type' => $this->faker->randomElement(['External', 'Internal']),
+            'education' => $this->faker->sentence,
+            'working_place' => $this->faker->company,
+            'phone_number' => $this->faker->phoneNumber,
+            'email' => $this->faker->email,
         ];
     }
 }

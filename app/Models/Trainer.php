@@ -13,13 +13,15 @@ class Trainer extends Model
     protected $fillable = [
         'name',
         'type',
-        'type_name',
+        'education',
         'working_place',
+        'phone_number',
+        'email',
     ];
 
     public function users()
     {
-        return $this->hasMany(User::class);
+        return $this->hasOne(User::class)->latestOfMany();
     }
 
     public function topics()

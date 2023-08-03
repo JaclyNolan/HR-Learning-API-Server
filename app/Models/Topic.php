@@ -13,6 +13,7 @@ class Topic extends Model
     protected $fillable = [
         'name',
         'description',
+        'course_id',
     ];
 
     // Mutator to set the default value for description
@@ -26,8 +27,8 @@ class Topic extends Model
         return $this->hasMany(Course::class);
     }
 
-    public function topics()
+    public function trainers()
     {
-        return $this->belongsToMany(Topic::class, 'trainers_topics');
+        return $this->belongsToMany(Trainer::class, 'trainers_topics');
     }
 }

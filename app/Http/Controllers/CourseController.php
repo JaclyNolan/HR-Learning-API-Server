@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\CourseCategory;
+use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
@@ -49,6 +50,53 @@ class CourseController extends Controller
         $courses = $query->with([
             'courseCategory:id,name',
         ])->paginate($perPage);
+        // $courses->makeHidden(['created_at', 'updated_at', 'deleted_at']);
+        return response()->json($courses, 200);
+        // } catch (Exception) {
+        //     return response()->json([], 500);
+        // }
+    }
+
+    public function indexForTrainer(Request $request)
+    {
+        // try {
+        $sortField = $request->query('sortField', 'name');
+        $sortOrder = $request->query('sortOrder', 'asc');
+        $search = $request->query('search', '');
+        /** @var User $user */
+        $user = $request->user();
+
+        $query = Course::query();
+
+        //To-do: Course must belong to trainer
+        $query->whereHas('topics', function ($q) use ($user) {
+            $q->whereHas('trainers', function ($q) use ($user) {
+                $q->where('trainers.id', $user->trainer_id);
+            });
+        });
+
+        if ($search) {
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        // Add the 'name' field of the related category to the sortable fields
+        $sortableFields = ['id', 'name', 'created_at'];
+        if (!in_array($sortField, $sortableFields)) {
+            // Default to 'name' if the provided sortField is not in the sortable fields
+            $sortField = 'name';
+        }
+        $query->orderBy($sortField, $sortOrder);
+        /** @var Collection $courses */
+        $courses = $query->with([
+            'courseCategory:id,name',
+            'topics' => function ($q) use ($user) {
+                $q->select('id', 'name', 'course_id', 'description')
+                    ->whereHas('trainers', function ($q) use ($user) {
+                        $q->where('trainers.id', $user->trainer_id);
+                    });
+            }
+        ])->get();
+        $courses->makeHidden('created_at', 'updated_at', 'deleted_at');
         // $courses->makeHidden(['created_at', 'updated_at', 'deleted_at']);
         return response()->json($courses, 200);
         // } catch (Exception) {
