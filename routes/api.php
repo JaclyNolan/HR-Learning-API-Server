@@ -70,6 +70,14 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::get('/edit-trainers/{id}', [TopicController::class, 'editTrainer']);
             Route::post('/edit-trainers/{id}', [TopicController::class, 'updateTrainer']);
         });
+
+        Route::group(['prefix' => 'trainers'], function () {
+            Route::get('/', [TrainerController::class, 'index']);
+            Route::post('/add', [TrainerController::class, 'store']);
+            Route::get('/edit/{id}', [TrainerController::class, 'edit']);
+            Route::post('/edit/{id}', [TrainerController::class, 'update']);
+            Route::delete('/delete/{id}', [TrainerController::class, 'delete']);
+        });
     });
 });
 
