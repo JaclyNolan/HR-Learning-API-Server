@@ -50,6 +50,19 @@ class TrainerController extends Controller
         return response()->json($trainers, 200);
     }
 
+    public function takeTen(Request $request)
+    {
+        $search = $request->input('search');
+        $query = Trainer::query();
+
+        if ($search) {
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        $trainers = $query->take(10)->get();
+        return response()->json($trainers, 200);
+    }
+
     /**
      * Show the form for creating a new resource.
      */
@@ -79,9 +92,8 @@ class TrainerController extends Controller
             return response()->json($trainer, 200);
         } catch (BadRequestException) {
             return response()->json('Invalid name or id', 400);
-        } catch (Exception $e) {
-            // return response()->json('Server Error', 500);
-            return response()->json($e->getMessage(), 500);
+        } catch (Exception) {
+            return response()->json('Server Error', 500);
         }
     }
 

@@ -118,6 +118,15 @@ class TopicController extends Controller
         }
     }
 
+    public function editTrainer(Request $request, string $id)
+    {
+        $topic = Topic::with([
+            'trainers'
+        ])->find($id);
+
+        return response()->json($topic, 200);
+    }
+
     /**
      * Update the specified resource in storage.
      */
@@ -133,6 +142,29 @@ class TopicController extends Controller
         } catch (Exception) {
             return response()->json('Server Error', 500);
         }
+    }
+
+    public function updateTrainer(Request $request, string $id)
+    {
+        $newTrainerIds = $request->input('trainer_ids');
+
+        $topic = Topic::with([
+            'trainers'
+        ])->find($id);
+        $oldTrainers = $topic->trainers;
+
+        //To-do: overwrite the new trainer with the old one
+        foreach ($oldTrainers as $oldTrainer) {
+            $topic->trainers()->detach($oldTrainer->id);
+        }
+
+        foreach ($newTrainerIds as $newTrainerId) {
+            $topic->trainers()->attach($newTrainerId);
+        }
+
+        $topic = $topic->fresh(['trainers']);
+
+        return response()->json($topic, 200);
     }
 
     /**
