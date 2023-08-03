@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Trainee;
+use Exception;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
+use Symfony\Component\HttpFoundation\Exception\BadRequestException;
 
 class TraineeController extends Controller
 {
@@ -77,6 +79,37 @@ class TraineeController extends Controller
     public function store(Request $request)
     {
         //
+        try {
+            $name = $request->input('name');
+            $account = $request->input('account');
+            $age = $request->input('age');
+            $date_of_birth = $request->input('date_of_birth');
+            $education = $request->input('education');
+            $main_programming_language = $request->input('main_programming_language');
+            $toeic_score = $request->input('toeic_score');
+            $department = $request->input('department');
+            $location = $request->input('location');
+
+    
+            $courseCategory = Trainee::create([
+                "name" => $name,
+                "account" => $account,
+                "age" => $age,
+                "date_of_birth" => $date_of_birth,
+                "education" => $education,
+                "main_programming_language" => $main_programming_language,
+                "department" => $department,
+                "toeic_score" => $toeic_score,
+                "location" => $location,
+            ]);
+    
+            return response()->json($courseCategory, 200);
+        } catch (BadRequestException) {
+            return response()->json('Invalid name or id', 400);
+        } catch (Exception $e) {
+            // return response()->json('Server Error', 500);
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
     /**
@@ -90,9 +123,17 @@ class TraineeController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
-    public function edit(string $id)
+    public function edit(Request $request, string $id)
     {
-        //
+        try {
+            $trainee = Trainee::find($id);
+            if (!$trainee) throw new BadRequestException;
+            return response()->json($trainee, 200);
+        } catch (BadRequestException) {
+            return response()->json('Invalid id', 400);
+        } catch (Exception) {
+            return response()->json('Server Error', 500);
+        }
     }
 
     /**
@@ -100,7 +141,37 @@ class TraineeController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        try {
+            $trainee = Trainee::find($id);
+            $trainee->name = $request->input('name');
+            $trainee->account = $request->input('account');
+            $trainee->age = $request->input('age');
+            $trainee->date_of_birth = $request->input('date_of_birth');
+            $trainee->education = $request->input('education');
+            $trainee->main_programming_language = $request->input('main_programming_language');
+            $trainee->department = $request->input('department');
+            $trainee->toeic_score = $request->input('toeic_score');
+            $trainee->location = $request->input('location');
+           
+            $trainee->save();
+            return response()->json($trainee, 200);
+        } catch (Exception) {
+            return response()->json('Server Error', 500);
+        }
+    }
+
+    public function delete(Request $request, string $id)
+    {
+        try {
+            $trainee = Trainee::find($id);
+            if (!$trainee) throw new BadRequestException();
+            $trainee->delete();
+            return response()->json("Successfully deleted trainee with the id " . $id, 200);
+        } catch (BadRequestException) {
+            return response()->json("Invalid Id", 400);
+        } catch (Exception $e) {
+            return response()->json($e->getMessage(), 500);
+        }
     }
 
     /**
