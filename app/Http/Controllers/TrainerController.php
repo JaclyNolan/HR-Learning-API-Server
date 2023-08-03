@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Trainer;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Http\Request;
 
@@ -13,6 +14,19 @@ class TrainerController extends Controller
     public function index()
     {
         //
+    }
+
+    public function takeTen(Request $request)
+    {
+        $search = $request->input('search');
+        $query = Trainer::query();
+
+        if ($search) {
+            $query->where('name', 'LIKE', "%$search%");
+        }
+
+        $trainers = $query->take(10)->get();
+        return response()->json($trainers, 200);
     }
 
     /**

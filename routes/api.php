@@ -42,6 +42,16 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::delete('/delete/{id}', [TraineeController::class, 'delete']);
         });
 
+        Route::group(['prefix' => 'trainers'], function () {
+            Route::get('/', [TrainerController::class, 'index']);
+            Route::get('/take-ten', [TrainerController::class, 'takeTen']);
+            Route::get('/add', [TrainerController::class, 'create']);
+            Route::post('/add', [TrainerController::class, 'store']);
+            Route::get('/edit/{id}', [TrainerController::class, 'edit']);
+            Route::post('/edit/{id}', [TrainerController::class, 'update']);
+            Route::delete('/delete/{id}', [TrainerController::class, 'delete']);
+        });
+
         Route::group(['prefix' => 'courseCategories'], function () {
             Route::get('/', [CourseCategoryController::class, 'index']);
             Route::post('/add', [CourseCategoryController::class, 'store']);
@@ -57,6 +67,8 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::get('/edit/{id}', [TopicController::class, 'edit']);
             Route::post('/edit/{id}', [TopicController::class, 'update']);
             Route::delete('/delete/{id}', [TopicController::class, 'delete']);
+            Route::get('/edit-trainers/{id}', [TopicController::class, 'editTrainer']);
+            Route::post('/edit-trainers/{id}', [TopicController::class, 'updateTrainer']);
         });
     });
 });
