@@ -27,6 +27,15 @@ Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
             Route::post('/edit/{id}', [CourseController::class, 'update']);
             Route::delete('/delete/{id}', [CourseController::class, 'delete']);
         });
+
+        Route::group(['prefix' => 'courseCategories'], function () {
+            Route::get('/', [CourseCategoryController::class, 'index']);
+            Route::get('/add', [CourseCategoryController::class, 'create']);
+            Route::post('/add', [CourseCategoryController::class, 'store']);
+            Route::get('/edit/{id}', [CourseCategoryController::class, 'edit']);
+            Route::post('/edit/{id}', [CourseCategoryController::class, 'update']);
+            Route::delete('/delete/{id}', [CourseCategoryController::class, 'delete']);
+        });
     });
 });
 
