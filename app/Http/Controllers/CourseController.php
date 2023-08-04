@@ -95,7 +95,6 @@ class CourseController extends Controller
                     });
             }
         ])->get();
-        $courses->makeHidden('created_at', 'updated_at', 'deleted_at');
         // $courses->makeHidden(['created_at', 'updated_at', 'deleted_at']);
         return response()->json($courses, 200);
         // } catch (Exception) {

@@ -30,7 +30,7 @@ class TrainerController extends Controller
         }
 
         // Add the 'name' field of the related category to the sortable fields
-        $sortableFields = ['id', 'name', 'created_at'];
+        $sortableFields = ['id', 'name', 'type', 'created_at'];
         if (!in_array($sortField, $sortableFields)) {
             // Default to 'name' if the provided sortField is not in the sortable fields
             $sortField = 'name';
@@ -78,17 +78,21 @@ class TrainerController extends Controller
     {
         try {
             $name = $request->input('name');
-        $type = $request->input('type');
-        $type_name = $request->input('type_name');
-        $working_place = $request->input('working_place');
-    
+            $type = $request->input('type');
+            $education = $request->input('education');
+            $working_place = $request->input('working_place');
+            $phone_number = $request->input('phone_number');
+            $email = $request->input('email');
+
             $trainer = Trainer::create([
                 "name" => $name,
                 "type" => $type,
-                "type_name"=> $type_name,
+                "education" => $education,
                 "working_place" => $working_place,
+                "phone_number" => $phone_number,
+                "email" => $email,
             ]);
-    
+
             return response()->json($trainer, 200);
         } catch (BadRequestException) {
             return response()->json('Invalid name or id', 400);
@@ -155,7 +159,10 @@ class TrainerController extends Controller
             $trainer = Trainer::find($id);
             $trainer->name = $request->input('name');
             $trainer->type = $request->input('type');
+            $trainer->education = $request->input('education');
             $trainer->working_place = $request->input('working_place');
+            $trainer->phone_number = $request->input('phone_number');
+            $trainer->email = $request->input('email');
             $trainer->save();
             return response()->json($trainer, 200);
         } catch (Exception) {
