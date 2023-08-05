@@ -29,7 +29,7 @@ class TraineeController extends Controller
         }
 
         // Add the 'name' field of the related category to the sortable fields
-        $sortableFields = ['id', 'name', 'created_at'];
+        $sortableFields = ['id', 'name', 'age', 'date_of_birth', 'toeic_score', 'created_at'];
         if (!in_array($sortField, $sortableFields)) {
             // Default to 'name' if the provided sortField is not in the sortable fields
             $sortField = 'name';
@@ -90,7 +90,7 @@ class TraineeController extends Controller
             $department = $request->input('department');
             $location = $request->input('location');
 
-    
+
             $courseCategory = Trainee::create([
                 "name" => $name,
                 "account" => $account,
@@ -102,7 +102,7 @@ class TraineeController extends Controller
                 "toeic_score" => $toeic_score,
                 "location" => $location,
             ]);
-    
+
             return response()->json($courseCategory, 200);
         } catch (BadRequestException) {
             return response()->json('Invalid name or id', 400);
@@ -152,7 +152,7 @@ class TraineeController extends Controller
             $trainee->department = $request->input('department');
             $trainee->toeic_score = $request->input('toeic_score');
             $trainee->location = $request->input('location');
-           
+
             $trainee->save();
             return response()->json($trainee, 200);
         } catch (Exception) {

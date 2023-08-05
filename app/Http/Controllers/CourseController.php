@@ -86,7 +86,6 @@ class CourseController extends Controller
             $sortField = 'name';
         }
         $query->orderBy($sortField, $sortOrder);
-        /** @var Collection $courses */
         $courses = $query->with([
             'courseCategory:id,name',
             'topics' => function ($q) use ($user) {
@@ -96,7 +95,6 @@ class CourseController extends Controller
                     });
             }
         ])->get();
-        $courses->makeHidden('created_at', 'updated_at', 'deleted_at');
         // $courses->makeHidden(['created_at', 'updated_at', 'deleted_at']);
         return response()->json($courses, 200);
         // } catch (Exception) {

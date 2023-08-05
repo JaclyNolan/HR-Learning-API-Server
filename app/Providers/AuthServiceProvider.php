@@ -33,6 +33,11 @@ class AuthServiceProvider extends ServiceProvider
             ? Response::allow()
             : Response::deny();
         });
+        Gate::define('isAdminOrStaff', function(User $user) {
+            return $user->role->name == 'staff' || $user->role->name == 'admin'
+            ? Response::allow()
+            : Response::deny();
+        });
         Gate::define('isTrainer', function(User $user) {
             return $user->role->name == 'trainer'
             ? Response::allow()

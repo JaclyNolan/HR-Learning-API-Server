@@ -6,6 +6,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\TopicController;
 use App\Http\Controllers\TraineeController;
 use App\Http\Controllers\TrainerController;
+use App\Http\Controllers\UserController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -19,6 +20,33 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "api" middleware group. Make something great!
 |
 */
+
+Route::middleware(['auth:sanctum', 'can:isAdmin'])->group(function () {
+    Route::group(['prefix' => 'admin'], function () {
+        Route::group(['prefix' => 'users'], function () {
+            Route::get('/', [UserController::class, 'index']);
+            Route::get('/add', [UserController::class, 'create']);
+            Route::post('/add', [UserController::class, 'store']);
+            Route::get('/edit/{id}', [UserController::class, 'edit']);
+            Route::post('/edit/{id}', [UserController::class, 'update']);
+            Route::delete('/delete/{id}', [UserController::class, 'delete']);
+        });
+    });
+});
+
+Route::middleware(['auth:sanctum', 'can:isAdminOrStaff'])->group(function () {
+    Route::group(['prefix' => 'staff'], function () {
+        Route::group(['prefix' => 'trainers'], function () {
+            Route::get('/', [TrainerController::class, 'index']);
+            Route::get('/take-ten', [TrainerController::class, 'takeTen']);
+            Route::get('/add', [TrainerController::class, 'create']);
+            Route::post('/add', [TrainerController::class, 'store']);
+            Route::get('/edit/{id}', [TrainerController::class, 'edit']);
+            Route::post('/edit/{id}', [TrainerController::class, 'update']);
+            Route::delete('/delete/{id}', [TrainerController::class, 'delete']);
+        });
+    });
+});
 
 Route::middleware(['auth:sanctum', 'can:isStaff'])->group(function () {
     Route::group(['prefix' => 'staff'], function () {
