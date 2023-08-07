@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Role;
+use App\Models\Trainer;
 use App\Models\User;
 use Exception;
 use Illuminate\Database\Eloquent\Collection;
@@ -65,16 +66,15 @@ class UserController extends Controller
     {
         //
         $search = $request->input('search');
-        $query = Role::query();
+        $query = Trainer::query();
 
         if ($search) {
-            Log::info($search);
             $query->where('name', 'LIKE', "%$search%");
         }
 
-        $role = $query->take(10)->get();
+        $trainer = $query->take(10)->get();
 
-        return response()->json(['roles' => $role], 200);
+        return response()->json(['trainer' => $trainer], 200);
     }
 
     /**
@@ -85,20 +85,16 @@ class UserController extends Controller
         try {
             $user_name = $request->input('name');
             $user_email = $request->input('email');
-            //$role_id = $request->input('role_id');
+            $role_id = $request->input('role_id');
             $password = $request->input('password');
-
-            // Kiểm tra nếu role_id được cung cấp tồn tại trong bảng roles
-            // $role = Role::find($role_id);
-            // if (!$role) {
-            //     throw new BadRequestException('role_id không hợp lệ');
-            // }
+            $trainer_id = $request->input('trainer_id');
 
             $user = User::create([
                 "name" => $user_name,
                 "email" => $user_email,
-                //"role_id" => $role_id,
+                "role_id" => $role_id,
                 "password" => $password,
+                "trainer_id" => $trainer_id,
             ]);
 
             return response()->json($user, 200);
@@ -146,6 +142,7 @@ class UserController extends Controller
             $user->name = $request->input('name');
             $user->email = $request->input('email');
             $user->role_id = $request->input('role_id');
+            $user->trainer_id = $request->input('trainer_id');
             $user->save();
             return response()->json($user, 200);
         } catch (Exception) {
